@@ -21,7 +21,7 @@
 - `data` - 儲存資料資料夾。
 - `uploads` - 暫存上傳資料的資料夾，上傳新資料時會覆蓋。
 - `count_footfall` - 人流計數相關檔案：
-  - `yolo-coco`：請先至 [yolov3.weights](https://pjreddie.com/media/files/yolov3.weights) 下載權重檔案，並放置在此資料夾中。
+  - `yolo-coco`：請先至 [yolov3.weights](https://github.com/patrick013/Object-Detection---Yolov3) 下載權重檔案，並放置在此資料夾中。
   - `output`：人流計數的輸出結果將儲存在此資料夾。
 
 ## 功能
