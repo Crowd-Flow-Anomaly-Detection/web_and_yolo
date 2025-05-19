@@ -10,7 +10,7 @@ import pdb
 from count_footfall.sort import *
 
 def process_video(video_path):
-
+	os.makedirs("count_footfall/output", exist_ok=True)
 
 	files = glob.glob('output/*.png')
 	for f in files:
@@ -20,7 +20,7 @@ def process_video(video_path):
 	tracker = Sort()
 	memory = {}
 	# line = [(43, 543), (550, 655)]
-	line = [(400, 870), (850, 870)]
+	line = [(960, 0), (960, 1080)]
 
 	counter = 0
 
@@ -40,7 +40,7 @@ def process_video(video_path):
 
 	args = {
     "input": video_path,
-    "output": "count_footfall/output/highway.avi",
+    "output": "count_footfall/output/highway.mp4",
     "yolo": "count_footfall/yolo-coco",
     "confidence": 0.5,
     "threshold": 0.3
@@ -232,10 +232,15 @@ def process_video(video_path):
 
 		# check if the video writer is None
 		if writer is None:
-			# initialize our video writer
-			fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-			writer = cv2.VideoWriter(args["output"], fourcc, 30,
-				(frame.shape[1], frame.shape[0]), True)
+			# initialize our video writer for MP4
+			fourcc = cv2.VideoWriter_fourcc(*"avc1")           # H.264
+			writer = cv2.VideoWriter(
+				args["output"],
+				fourcc,
+				30,
+				(frame.shape[1], frame.shape[0]),
+				True
+			)
 
 			# some information on processing single frame
 			if total > 0:
@@ -280,8 +285,8 @@ def process_video(video_path):
 	# 發送 POST 請求
 	response = requests.post(url, json=data, headers=headers)
 	print("API response:", response.status_code, response.text)
-
-	return counter
+	
+	return counter, args["output"]
 
 if __name__ == "__main__":
 	process_video()

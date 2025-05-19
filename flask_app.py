@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, send_file
+from flask import Flask, render_template, jsonify, request, send_file, send_from_directory
 import json
 import calendar as cal
 from datetime import datetime
@@ -7,10 +7,14 @@ import io
 import os
 import matplotlib
 from count_footfall.process import process_video
+from flask_cors import CORS
+
 
 matplotlib.use('Agg')
 
 app = Flask(__name__)
+CORS(app)
+
 
 FILE_NAME = 'data/footfall_data.json'
 # 影片上傳資料夾
@@ -233,18 +237,33 @@ def upload_video():
     print("Processing video...")
     try:
         # process_video 回傳計算到的人數
-        footfall_count = process_video(filepath)
+        footfall_count ,output_path= process_video(filepath)
     except Exception as e:
         # 當處理影片失敗時，回傳錯誤訊息和 500 狀態碼
         print("Error processing video:", str(e))
         return jsonify({"error": "Video processing failed", "details": str(e)}), 500
 
     print("Video processed successfully")
+    print(f"/api/download_video/{output_path}")
     return jsonify({
         "message": "Video uploaded successfully",
         "file_path": filepath,
-        "footfall": footfall_count
+        "footfall": footfall_count,
+        "download_url": f"/api/download_video/{output_path}"
     }), 201
+
+# 提供下載影片的 endpoint
+@app.route('/api/download_video/<path:filename>')
+def download_video(filename):
+    full_path = filename
+    print("Full path:", full_path)
+    
+    return send_file(
+        full_path,
+        mimetype='video/mp4',    # 或依實際副檔名決定
+        as_attachment=False,     # inline 顯示／串流，用 True 才會下載
+        conditional=True         # 支援 HTTP Range
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)
