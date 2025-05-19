@@ -81,4 +81,11 @@ curl -X POST http://127.0.0.1:5000/api/upload -F "file=@for_test_upload_data.jso
 curl -X POST http://127.0.0.1:5000/api/upload_video -F "video=@影片路徑"
 ```
 
+### 影片下載
+#### 下載已處理的影片檔案 使用/upload_video上傳影片後API會回傳"download_url"給前端讀取影片
+```bash
+# 透過檔名路徑下載影片（支援 HTTP Range，可直接串流觀看）
+curl -X GET http://127.0.0.1:5000/api/download_video/影片路徑
+```
+
 ---
