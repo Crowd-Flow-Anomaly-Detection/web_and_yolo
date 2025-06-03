@@ -7,10 +7,11 @@ import cv2
 import os
 import glob
 import pdb
-from count_footfall.sort import *
+from sort import Sort
+# from count_footfall.sort import *
 
 def process_video(video_path):
-	os.makedirs("count_footfall/output", exist_ok=True)
+	os.makedirs("output", exist_ok=True)
 
 	files = glob.glob('output/*.png')
 	for f in files:
@@ -40,8 +41,8 @@ def process_video(video_path):
 
 	args = {
     "input": video_path,
-    "output": "count_footfall/output/highway.mp4",
-    "yolo": "count_footfall/yolo-coco",
+    "output": "output/result.mp4",
+    "yolo": "yolo-coco",
     "confidence": 0.5,
     "threshold": 0.3
 		}
@@ -63,8 +64,8 @@ def process_video(video_path):
 		dtype="uint8")
 
 	# derive the paths to the YOLO weights and model configuration
-	weightsPath = os.path.sep.join([args["yolo"], "yolov3.weights"])
-	configPath = os.path.sep.join([args["yolo"], "yolov3.cfg"])
+	weightsPath = os.path.sep.join([args["yolo"], "yolov3-tiny.weights"])
+	configPath = os.path.sep.join([args["yolo"], "yolov3-tiny.cfg"])
 
 	# load our YOLO object detector trained on COCO dataset (80 classes)
 	# and determine only the *output* layer names that we need from YOLO
@@ -289,4 +290,5 @@ def process_video(video_path):
 	return counter, args["output"]
 
 if __name__ == "__main__":
-	process_video()
+	video_path = "/Data/yulin/SideProject/人流專案/output_1fps.mp4"
+	process_video(video_path)
